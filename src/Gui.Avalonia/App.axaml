@@ -1,0 +1,47 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="MMKiwi.PicMapper.Gui.Avalonia.App"
+             xmlns:local="using:MMKiwi.PicMapper.Gui.Avalonia"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+  
+    <Application.Styles>
+		<Style Selector="TextBlock.Caption">
+			<Setter Property="FontSize" Value="12" />
+		</Style>
+		<Style Selector="TextBlock.Strong">
+			<Setter Property="FontWeight" Value="SemiBold" />
+		</Style>
+		<Style Selector="TextBlock.Large">
+			<Setter Property="FontSize" Value="18" />
+		</Style>
+		<Style Selector="TextBlock.Subtitle">
+			<Setter Property="FontSize" Value="20" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+		</Style>
+		<Style Selector="TextBlock.Title">
+			<Setter Property="FontSize" Value="28" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+		</Style>
+		<Style Selector="TextBlock.TitleLarge">
+			<Setter Property="FontSize" Value="40" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+		</Style>
+		<Style Selector="TextBlock.Display">
+			<Setter Property="FontSize" Value="68" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+		</Style>
+		<FluentTheme>
+			<FluentTheme.Palettes>
+				<!-- Palette for Light theme variant -->
+				<ColorPaletteResources x:Key="Light" Accent="#ff00b7c3" RegionColor="White" ErrorText="Red"  />
+				<!-- Palette for Dark theme variant -->
+				<ColorPaletteResources x:Key="Dark" Accent="#ff00b7c3" RegionColor="Black" ErrorText="Yellow" />
+			</FluentTheme.Palettes>
+		</FluentTheme>
+    </Application.Styles>
+</Application>

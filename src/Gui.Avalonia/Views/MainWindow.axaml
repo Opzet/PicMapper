@@ -1,0 +1,46 @@
+<Window xmlns="https://github.com/avaloniaui"
+		xmlns:maps="clr-namespace:Mapsui.UI.Avalonia;assembly=Mapsui.UI.Avalonia"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:MMKiwi.PicMapper.ViewModels"
+		xmlns:local="using:MMKiwi.PicMapper.Gui.Avalonia.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="MMKiwi.PicMapper.Gui.Avalonia.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Gui.Avalonia">
+
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Grid Margin="6" ColumnDefinitions="*,Auto,*" RowDefinitions="Auto,*,Auto">
+		<TextBlock Text="Photos" Margin="12" Classes="Title" />
+		<ListBox Margin="12" Grid.Row="1" x:Name="PhotoList" ItemsSource="{Binding Images}" SelectionMode="Multiple">
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel />
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Vertical">
+						<Image Width="150" Height="100" Source="{Binding Thumbnail}" />
+						<TextBlock Text="{Binding FileName}" Width="150" Classes="Caption" TextTrimming="CharacterEllipsis" TextAlignment="Center" />
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+		<StackPanel Grid.Row="2"  Orientation="Horizontal" HorizontalAlignment="Center">
+			<Button Margin="12" x:Name="LoadButton" Content="Load"   Command="{Binding LoadImages}"/>
+			<Button Margin="12" x:Name="RemoveButton" Content="Remove"   Command="{Binding RemoveImages}"/>
+		</StackPanel>
+		<GridSplitter Grid.Column="1"  ResizeDirection="Columns"/>
+		<TextBlock Text="Map Preview" Margin="12" Grid.Column="2" Classes="Title" />
+		<maps:MapControl Grid.Column="2" Grid.Row="1" x:Name="MapView"  />
+	</Grid>
+
+</Window>
