@@ -8,4 +8,9 @@ public interface IBitmapProvider
     string FileName { get; }
     double? X { get; }
     double? Y { get; }
+
+    byte[] GetThumbnail();
+    string ThumbnailMimeType { get; }
+    string MimeType { get; }
+    Task CopyImageAsync(Stream destination);
 }

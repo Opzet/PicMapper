@@ -8,11 +8,16 @@ using Avalonia.Media.Imaging;
 using System.Linq;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
+using System.Collections.Generic;
+using Directory = MetadataExtractor.Directory;
+using MetadataExtractor.Util;
+using System.Text;
+using System;
 
 namespace MMKiwi.PicMapper.Gui.Avalonia.Services;
 public class AvaloniaBitmapProvider : IBitmapProvider
 {
-    private AvaloniaBitmapProvider(IStorageFile file, Bitmap thumbnail, double width, double height, string fileName, double? x, double? y)
+    private AvaloniaBitmapProvider(IStorageFile file, Bitmap thumbnail, double width, double height, string fileName, double? x, double? y, string mimeType)
     {
         StorageFile = file;
         Thumbnail = thumbnail;
@@ -21,21 +26,26 @@ public class AvaloniaBitmapProvider : IBitmapProvider
         FileName = fileName;
         X = x;
         Y = y;
+        MimeType = mimeType;
     }
 
     public static async Task<AvaloniaBitmapProvider> LoadAsync(IStorageFile file)
     {
         await using Stream imageStream = await file.OpenReadAsync();
 
+        string mimeType = DetectMimeType(imageStream);
+
+        imageStream.Seek(0, SeekOrigin.Begin);
         var thumbnail = Bitmap.DecodeToHeight(imageStream, 100);
 
         imageStream.Seek(0, SeekOrigin.Begin);
 
-        GpsDirectory? gps = ImageMetadataReader.ReadMetadata(imageStream).OfType<GpsDirectory>().FirstOrDefault();
+        IReadOnlyList<Directory> metadata = ImageMetadataReader.ReadMetadata(imageStream);
 
+        GpsDirectory? gps = metadata.OfType<GpsDirectory>().FirstOrDefault();
         GeoLocation? location = gps?.GetGeoLocation();
 
-        return new(file, thumbnail, 0, 0, file.Path.Segments.Last(), location?.Longitude, location?.Latitude);
+        return new(file, thumbnail, 0, 0, file.Path.Segments.Last(), location?.Longitude, location?.Latitude, mimeType);
     }
     public double Width { get; }
 
@@ -52,6 +62,9 @@ public class AvaloniaBitmapProvider : IBitmapProvider
     public double? X { get; }
 
     public double? Y { get; }
+    public string MimeType { get; }
+
+    public string ThumbnailMimeType => "image/png";
 
     public async Task<Bitmap> GetImageAsync()
     {
@@ -60,4 +73,44 @@ public class AvaloniaBitmapProvider : IBitmapProvider
     }
 
     async Task<object> IBitmapProvider.GetImageAsync() => await GetImageAsync();
+
+    public byte[] GetThumbnail()
+    {
+        using MemoryStream ms = new();
+        Thumbnail.Save(ms);
+        return ms.ToArray();
+    }
+
+    public async Task CopyImageAsync(Stream destination)
+    {
+        await using Stream imageStream = await StorageFile.OpenReadAsync();
+        await imageStream.CopyToAsync(destination);
+    }
+
+    private static string DetectMimeType(Stream imageFile)
+    {
+        Span<byte> header = stackalloc byte[16];
+        imageFile.ReadExactly(header);
+
+        return header switch
+        {
+            var h when h[..2].SequenceEqual(FileSignatures.Jpeg) => "image/jpg",
+            var h when h.Slice(4, 12).SequenceEqual(FileSignatures.Heic) => "image/heic",
+            var h when h[..8].SequenceEqual(FileSignatures.Png) => "image/png",
+            var h when h[..4].SequenceEqual(FileSignatures.WebPStart) 
+                    && h.Slice(8, 4).SequenceEqual(FileSignatures.WebPEnd) => "image/webp",
+            _ => throw new InvalidDataException("Unsupported image format. Image must be PNG, JPEG, HEIC, or WEBP")
+        };
+    }
+
+    private static class FileSignatures
+    {
+        public static ReadOnlySpan<byte> Png => new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
+        public static ReadOnlySpan<byte> Jpeg => new byte[] { 0xFF, 0xD8 };
+        public static ReadOnlySpan<byte> Heic => "ftypheic"u8;
+        public static ReadOnlySpan<byte> WebPStart => "RIFF"u8;
+        public static ReadOnlySpan<byte> WebPEnd => "WEBP"u8;
+    }
 }
+
+
