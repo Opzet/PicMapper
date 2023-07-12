@@ -1,22 +1,11 @@
-using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
-using System.Reactive.Disposables;
 using MMKiwi.PicMapper.ViewModels;
 using System.Reactive.Linq;
-using System.Linq;
-using MMKiwi.PicMapper.Models;
 using Avalonia.Controls.Selection;
-using System.Diagnostics;
-using System;
-using Avalonia;
-using MMKiwi.PicMapper.Gui.Avalonia.Services;
-using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Styles;
-using Mapsui.Extensions;
 using Avalonia.Platform;
-using SkiaSharp;
 using Mapsui.Projections;
 using MMKiwi.PicMapper.Models.Services;
 

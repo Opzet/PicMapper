@@ -1,11 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reactive.Concurrency;
-using System.Threading.Tasks;
 
 namespace MMKiwi.PicMapper.Gui.Avalonia;
 

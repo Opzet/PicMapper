@@ -2,7 +2,6 @@
 using System.Reactive;
 using Splat;
 using MMKiwi.PicMapper.Models.Services;
-using MMKiwi.PicMapper.Models;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 

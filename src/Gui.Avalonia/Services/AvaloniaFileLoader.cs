@@ -1,10 +1,6 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using MMKiwi.PicMapper.Models.Services;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MMKiwi.PicMapper.Gui.Avalonia.Services;
 internal class AvaloniaFileLoader : IFileLoader

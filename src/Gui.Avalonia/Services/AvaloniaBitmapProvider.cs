@@ -1,18 +1,9 @@
-﻿using Avalonia.Media;
-using Avalonia.Platform;
-using Avalonia.Platform.Storage;
-using System.Threading.Tasks;
+﻿using Avalonia.Platform.Storage;
 using MMKiwi.PicMapper.Models.Services;
-using System.IO;
 using Avalonia.Media.Imaging;
-using System.Linq;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
-using System.Collections.Generic;
 using Directory = MetadataExtractor.Directory;
-using MetadataExtractor.Util;
-using System.Text;
-using System;
 
 namespace MMKiwi.PicMapper.Gui.Avalonia.Services;
 public class AvaloniaBitmapProvider : IBitmapProvider

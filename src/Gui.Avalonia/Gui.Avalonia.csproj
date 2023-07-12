@@ -30,7 +30,6 @@
 		<None Remove="Assets\placemark.svg" />
 	</ItemGroup>
 
-
 	<ItemGroup>
 		<PackageReference Include="Avalonia" Version="11.0.0" />
 		<PackageReference Include="Avalonia.Controls.ItemsRepeater" Version="11.0.0" />
@@ -43,7 +42,6 @@
 		<PackageReference Include="Mapsui.Avalonia" Version="4.0.0" />
 		<PackageReference Include="MetadataExtractor" Version="2.8.0" />
 	</ItemGroup>
-
 
 	<ItemGroup>
 		<ProjectReference Include="..\Models\Models.csproj" />
