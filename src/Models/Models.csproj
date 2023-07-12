@@ -1,12 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AssemblyName>MMKiwi.PicMapper.$(MSBuildProjectName)</AssemblyName>
+		<RootNamespace>MMKiwi.PicMapper.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+	</PropertyGroup>
 
-	  <AssemblyName>MMKiwi.PicMapper.$(MSBuildProjectName)</AssemblyName>
-	  <RootNamespace>MMKiwi.PicMapper.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyVersion>0.1.0</AssemblyVersion>
+		<FileVersion>0.1.0</FileVersion>
+	</PropertyGroup>
 
+	<PropertyGroup>
+		<WarningLevel>9999</WarningLevel>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+	
 </Project>

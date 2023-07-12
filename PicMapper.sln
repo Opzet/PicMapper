@@ -5,19 +5,23 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{43A875DF-D770-4044-883B-ECB13DD673D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gui.Avalonia", "src\Gui.Avalonia\Gui.Avalonia.csproj", "{711A1B2F-6636-441D-BC43-63C4984F377F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gui.Avalonia", "src\Gui.Avalonia\Gui.Avalonia.csproj", "{711A1B2F-6636-441D-BC43-63C4984F377F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModels", "src\ViewModels\ViewModels.csproj", "{88741ECA-7395-4519-8B8D-D2DF227CE4EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModels", "src\ViewModels\ViewModels.csproj", "{88741ECA-7395-4519-8B8D-D2DF227CE4EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "src\Models\Models.csproj", "{AF0504F8-77FE-4CFD-AD0A-FB7400D9600A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "src\Models\Models.csproj", "{AF0504F8-77FE-4CFD-AD0A-FB7400D9600A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{20EE8230-5E51-4A83-BD61-0E60AB42E318}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{711A1B2F-6636-441D-BC43-63C4984F377F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -33,9 +37,15 @@ Global
 		{AF0504F8-77FE-4CFD-AD0A-FB7400D9600A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF0504F8-77FE-4CFD-AD0A-FB7400D9600A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{711A1B2F-6636-441D-BC43-63C4984F377F} = {43A875DF-D770-4044-883B-ECB13DD673D5}
 		{88741ECA-7395-4519-8B8D-D2DF227CE4EF} = {43A875DF-D770-4044-883B-ECB13DD673D5}
 		{AF0504F8-77FE-4CFD-AD0A-FB7400D9600A} = {43A875DF-D770-4044-883B-ECB13DD673D5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7AC4C152-A35C-4B65-9AA5-7DA3C3FDE52D}
 	EndGlobalSection
 EndGlobal
