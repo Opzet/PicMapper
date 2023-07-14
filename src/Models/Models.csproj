@@ -5,6 +5,7 @@
 		<Nullable>enable</Nullable>
 		<AssemblyName>MMKiwi.PicMapper.$(MSBuildProjectName)</AssemblyName>
 		<RootNamespace>MMKiwi.PicMapper.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+		<EnableTrimAnalyzer>true</EnableTrimAnalyzer>
 	</PropertyGroup>
 
 	<PropertyGroup>

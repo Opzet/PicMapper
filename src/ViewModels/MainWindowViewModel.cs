@@ -1,66 +1,41 @@
 ﻿using ReactiveUI;
-using System.Reactive;
-using Splat;
 using MMKiwi.PicMapper.Models.Services;
 using System.Collections.ObjectModel;
-using System.Reactive.Linq;
+using MMKiwi.PicMapper.ViewModels.Services;
+using System.Reactive;
 
 namespace MMKiwi.PicMapper.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel : ViewModelBase<MainWindowViewModel.Settings>, IScreen
 {
-
-
-    public MainWindowViewModel()
+    public MainWindowViewModel(IFileLoader fileLoader, ISettingsProvider settingsProvider)
     {
-        LoadImages = ReactiveCommand.CreateFromTask(LoadImagesAsync);
-        IObservable<bool> hasSelected = this.WhenAnyValue(vm => vm.SelectedImages).Select(coll => coll != null && coll.Any());
-        _hasSelected = hasSelected.ToProperty(this, vm => vm.HasSelected);
-        RemoveImages = ReactiveCommand.Create(RemoveImagesImpl, hasSelected);
+        FileLoader = fileLoader;
+        SettingsProvider = settingsProvider;
+        this.WhenActivated(d =>
+        {
+            Router.Navigate.Execute(new ImageSelectorViewModel(this));
+            HookupSettings(d);
+        });
     }
 
-    private async Task LoadImagesAsync()
-    {
-        IFileLoader fileLoader = Locator.Current.GetService<IFileLoader>() ?? throw new InvalidOperationException("Missing IFileLoader<TImage>");
-        IAsyncEnumerable<IBitmapProvider> files = fileLoader.LoadImageAsync();
-        await foreach (IBitmapProvider file in files)
-        {
-            Images.Add(file);
-        }
-    }
+    // The Router associated with this Screen.
+    // Required by the IScreen interface.
+    public RoutingState Router { get; } = new RoutingState();
 
-    private void RemoveImagesImpl()
-    {
-        if (SelectedImages == null)
-        {
-            return;
-        }
 
-        foreach (object selected in SelectedImages)
-        {
-            if (selected is IBitmapProvider selectedImage)
-            {
-                Images.Remove(selectedImage);
-            }
-        }
-    }
+    // The command that navigates a user back.
+    public ReactiveCommand<Unit, IRoutableViewModel?> GoBack => Router.NavigateBack;
+
 
     public ObservableCollection<IBitmapProvider> Images { get; } = new();
 
-    private IEnumerable<IBitmapProvider>? _selectedImages;
-    public IEnumerable<IBitmapProvider>? SelectedImages {
-        get => _selectedImages;
-        set {
-            _selectedImages = value;
-            this.RaisePropertyChanged();
-        }
+    public OutputFormat SelectedOutputFormat {
+        get => _selectedOutputFormat;
+        set => this.RaiseAndSetIfChanged(ref _selectedOutputFormat, value);
     }
+    private OutputFormat _selectedOutputFormat;
 
-    public ObservableAsPropertyHelper<bool> _hasSelected;
-
-    public ReactiveCommand<Unit, Unit> RemoveImages { get; }
-
-    public bool HasSelected => _hasSelected.Value;
-
-    public ReactiveCommand<Unit, Unit> LoadImages { get; }
+    public IFileLoader FileLoader { get; }
+    public ISettingsProvider SettingsProvider { get; }
 }

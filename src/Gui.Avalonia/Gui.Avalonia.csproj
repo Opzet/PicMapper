@@ -9,6 +9,8 @@
 		<AssemblyName>MMKiwi.PicMapper.$(MSBuildProjectName)</AssemblyName>
 		<RootNamespace>MMKiwi.PicMapper.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<PublishTrimmed>true</PublishTrimmed>
+		<PublishAot>true</PublishAot>
 	</PropertyGroup>
 	
 	<PropertyGroup>
@@ -41,10 +43,17 @@
 		<PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0" />
 		<PackageReference Include="Mapsui.Avalonia" Version="4.0.0" />
 		<PackageReference Include="MetadataExtractor" Version="2.8.0" />
+		<PackageReference Include="FluentIcons.Avalonia" Version="1.1.206" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Models\Models.csproj" />
 		<ProjectReference Include="..\ViewModels\ViewModels.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Views\OutputSettings.axaml.cs">
+	    <DependentUpon>OutputSettings.axaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 </Project>

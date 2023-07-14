@@ -4,11 +4,7 @@
              xmlns:local="using:MMKiwi.PicMapper.Gui.Avalonia"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
-  
+ 
     <Application.Styles>
 		<Style Selector="TextBlock.Caption">
 			<Setter Property="FontSize" Value="12" />

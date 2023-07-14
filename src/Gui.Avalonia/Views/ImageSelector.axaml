@@ -1,0 +1,148 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:MMKiwi.PicMapper.ViewModels"
+			 xmlns:designvm="using:MMKiwi.PicMapper.ViewModels.Design"
+			 xmlns:maps="clr-namespace:Mapsui.UI.Avalonia;assembly=Mapsui.UI.Avalonia"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:DataType="vm:ImageSelectorViewModel"
+             x:Class="MMKiwi.PicMapper.Gui.Avalonia.Views.ImageSelector"
+			 xmlns:ic="using:FluentIcons.Avalonia">
+
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<designvm:ImageSelectorViewModel />
+	</Design.DataContext>
+	<Grid Margin="12"
+		  ColumnDefinitions="*,Auto,*"
+		  RowDefinitions="Auto,*,Auto,*, Auto">
+		<TextBlock Text="Photos"
+				   Margin="12 12 12 6"
+				   Classes="Title"
+				   x:Name="PhotoLabel"/>
+		<Grid Grid.Row="1"
+			  ColumnDefinitions="*,Auto"
+			  Grid.RowSpan="3"
+			  RowDefinitions="*,Auto,Auto,*">
+			<ListBox Margin="12 6 6 12"
+					 x:Name="PhotoList"
+					 Grid.RowSpan="4"
+					 ItemsSource="{Binding MainWindow.Images}"
+					 SelectionMode="Multiple"
+					 AutomationProperties.LabeledBy="{Binding #PhotoLabel}">
+				<ListBox.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel />
+					</ItemsPanelTemplate>
+				</ListBox.ItemsPanel>
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Vertical">
+							<Image Width="150"
+								   Height="100"
+								   Source="{Binding Thumbnail}" />
+							<TextBlock Text="{Binding FileName}"
+									   Width="150"
+									   Classes="Caption"
+									   TextTrimming="CharacterEllipsis"
+									   TextAlignment="Center" />
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+			<Button Margin="12 6 12 6"
+					Grid.Column="1"
+					Grid.Row="1"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Center"
+					Command="{Binding LoadImages}"
+					x:Name="AddButton"
+					AutomationProperties.Name="Add">
+				<ic:SymbolIcon Symbol="Add"
+							   IsFilled="True" />
+			</Button>
+			<Button Margin="12 6 12 6"
+					Grid.Column="1"
+					Grid.Row="2"
+					Content="Remove"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Center"
+					x:Name="RemoveButton"
+					Command="{Binding RemoveImages}"
+					AutomationProperties.Name="Remove">
+				<ic:SymbolIcon Symbol="Subtract"
+							   IsFilled="True" />
+			</Button>
+		</Grid>
+		<GridSplitter Margin="6"
+					  Grid.Column="1"
+					  Grid.RowSpan="4"
+					  ResizeDirection="Columns"/>
+		<Ellipse Fill="Gray"
+				 Grid.Column="1"
+				 Grid.RowSpan="4"
+				 Width="3"
+				 Height="3" />
+		<Ellipse Fill="Gray"
+				 Grid.Column="1"
+				 Grid.RowSpan="4"
+				 Width="3"
+				 Height="3"
+				 Margin="0 15 0 0"/>
+		<Ellipse Fill="Gray"
+				 Grid.Column="1"
+				 Grid.RowSpan="4"
+				 Width="3"
+				 Height="3"
+				 Margin="0 0 0 15" />
+		<TextBlock Text="Map Preview"
+				   Margin="12"
+				   Grid.Column="2"
+				   Classes="Title"
+				   x:Name="MapLabel"/>
+		<maps:MapControl Margin="12"
+						 Grid.Column="2"
+						 Grid.Row="1"
+						 x:Name="MapView"
+						 AutomationProperties.LabeledBy="{Binding #MapLabel}"/>
+		<GridSplitter Grid.Column="2"
+					  Grid.Row="2"  />
+
+		<Ellipse Fill="Gray"
+				 Grid.Column="2"
+				 Grid.Row="2"
+				 Width="3"
+				 Height="3" />
+		<Ellipse Fill="Gray"
+				 Grid.Column="2"
+				 Grid.Row="2"
+				 Width="3"
+				 Height="3"
+				 Margin="15 0 0 0"/>
+		<Ellipse Fill="Gray"
+				 Grid.Column="2"
+				 Grid.Row="2"
+				 Width="3"
+				 Height="3"
+				 Margin="0 0 15 0" />
+		<Image Margin="12"
+			   Grid.Column="2"
+			   Grid.Row="3"
+			   x:Name="ImagePreview" />
+		<Button Grid.Row="4"
+				Grid.ColumnSpan="3"
+				Margin="12"
+				HorizontalAlignment="Right"
+				Command="{Binding Next}">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Next" />
+				<ic:SymbolIcon Margin="4 0 0 0" 
+							   Symbol="ArrowRight"
+							   IsFilled="True"
+							   VerticalAlignment="Center" />
+			</StackPanel>
+		</Button>
+	</Grid>
+</UserControl>
