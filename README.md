@@ -5,6 +5,8 @@ showing the location of those images.
 
 ## License
 
+This project is licensed under the [MPL version 2.0](LICENSE.md)
+
 ## Roadmap
 
 * Get basic functionality to export a KMZ for images
