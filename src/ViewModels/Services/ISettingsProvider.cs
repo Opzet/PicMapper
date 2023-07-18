@@ -5,5 +5,9 @@
 namespace MMKiwi.PicMapper.ViewModels.Services;
 public interface ISettingsProvider
 {
-    Task SaveMainWindowSettings(MainWindowViewModel viewModel);
+    Task SaveOutputSettings(OutputSettingsViewModel viewModel);
+    Task LoadOutputSettings(OutputSettingsViewModel viewModel);
+    Task SaveKmlSettings(KmlSettingsViewModel viewModel);
+    Task LoadKmlSettings(KmlSettingsViewModel viewModel);
+
 }

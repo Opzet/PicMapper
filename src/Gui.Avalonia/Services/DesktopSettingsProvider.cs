@@ -3,41 +3,121 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using Avalonia.Platform.Storage;
+
 using MMKiwi.PicMapper.ViewModels;
 using MMKiwi.PicMapper.ViewModels.Services;
+
+using Nito.AsyncEx;
+
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
 using XmpCore.Options;
 
 namespace MMKiwi.PicMapper.Gui.Avalonia.Services;
 public class DesktopSettingsProvider : ISettingsProvider
 {
-    public static async Task SaveMainWindowSettings(MainWindowViewModel viewModel)
-    {
-        await using FileStream jsonFile = File.OpenWrite(DataPath("main.json"));
-        await JsonSerializer.SerializeAsync<MainWindowViewModel.Settings>(jsonFile, viewModel.SaveSettings(), ViewModelSerializer.Default.MainWindowViewModel);
-    }
+    static private readonly SemaphoreSlim _syncRoot = new(1);
 
-    Task ISettingsProvider.SaveMainWindowSettings(MMKiwi.PicMapper.ViewModels.MainWindowViewModel viewModel) => SaveMainWindowSettings(viewModel);
+    static AsyncLazy<ViewModelSerializer.ConfigurationRoot> RootConfig { get; } = new(LoadCurrentConfigurationAsync);
 
-    public static async void LoadMainWindowSettings(MainWindowViewModel viewModel)
-    {
-        string jsonPath = DataPath("main.json");
-        if (!File.Exists(jsonPath)) return;
-        using FileStream jsonFile = File.OpenRead(jsonPath);
-        MainWindowViewModel.Settings? settings = await JsonSerializer.DeserializeAsync(jsonFile, ViewModelSerializer.Default.MainWindowViewModel);
-        settings?.LoadSettings(viewModel);
-    }
 
-    private static string DataPath(string fileName)
+    public static async Task SaveOutputSettings(OutputSettingsViewModel viewModel)
     {
-        if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PicMapper")))
+        await _syncRoot.WaitAsync();
+        try
         {
-            Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PicMapper"));
-        }
+            ViewModelSerializer.ConfigurationRoot rootConfig = await RootConfig.Task;
 
-        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PicMapper", fileName);
+            rootConfig.OutputSettings = viewModel.SaveSettings();
+
+            await using var jsonOut = File.Open(DataPath, FileMode.Create, FileAccess.Write);
+            await JsonSerializer.SerializeAsync(jsonOut, rootConfig, ViewModelSerializer.Default.Root);
+        }
+        finally
+        {
+            _ = _syncRoot.Release();
+        }
     }
 
+    public static async Task LoadOutputSettings(OutputSettingsViewModel viewModel)
+    {
+        await _syncRoot.WaitAsync();
+        try
+        {
+            ViewModelSerializer.ConfigurationRoot rootConfig = await RootConfig.Task;
+
+            if (rootConfig?.OutputSettings != null)
+                viewModel.LoadSettings(rootConfig.OutputSettings);
+        }
+        finally
+        {
+            _ = _syncRoot.Release();
+        }
+    }
+
+
+    public static async Task SaveKmlSettings(KmlSettingsViewModel viewModel)
+    {
+        await _syncRoot.WaitAsync();
+        try
+        {
+            ViewModelSerializer.ConfigurationRoot rootConfig = await RootConfig.Task;
+
+            rootConfig.Kml = viewModel.SaveSettings();
+
+            await using var jsonOut = File.Open(DataPath, FileMode.Create, FileAccess.Write);
+            await JsonSerializer.SerializeAsync(jsonOut, rootConfig, ViewModelSerializer.Default.Root);
+        }
+        finally
+        {
+            _ =_syncRoot.Release();
+        }
+    }
+
+    public static async Task LoadKmlSettings(KmlSettingsViewModel viewModel)
+    {
+        await _syncRoot.WaitAsync();
+        try
+        {
+            ViewModelSerializer.ConfigurationRoot rootConfig = await RootConfig.Task;
+
+            if (rootConfig?.Kml != null)
+                viewModel.LoadSettings(rootConfig.Kml);
+        }
+        finally
+        {
+            _syncRoot.Release();
+        }
+    }
+
+    private static async Task<ViewModelSerializer.ConfigurationRoot> LoadCurrentConfigurationAsync()
+    {
+        if (!File.Exists(DataPath)) return new();
+
+        ViewModelSerializer.ConfigurationRoot? rootConfig = null;
+
+        await using FileStream jsonIn = File.Open(DataPath, FileMode.Open);
+        if (jsonIn.Length > 0)
+        {
+            try
+            {
+                rootConfig = await JsonSerializer.DeserializeAsync(jsonIn, ViewModelSerializer.Default.Root);
+            }
+            catch
+            {
+#warning TODO warn that we could not load previous settings
+            }
+        }
+        return rootConfig ?? new();
+    }
+
+    Task ISettingsProvider.SaveOutputSettings(OutputSettingsViewModel viewModel) => SaveOutputSettings(viewModel);
+    Task ISettingsProvider.LoadOutputSettings(OutputSettingsViewModel viewModel) => LoadOutputSettings(viewModel);
+    Task ISettingsProvider.SaveKmlSettings(KmlSettingsViewModel viewModel) => SaveKmlSettings(viewModel);
+    Task ISettingsProvider.LoadKmlSettings(KmlSettingsViewModel viewModel) => LoadKmlSettings(viewModel);
+
+    private static string DataPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PicMapper.settings.json");
 }

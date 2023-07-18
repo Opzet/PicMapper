@@ -17,11 +17,18 @@ public class MainWindowViewModel : ViewModels.MainWindowViewModel
 
 public class SettingsProvider : ISettingsProvider
 {
-    public Task SaveMainWindowSettings(ViewModels.MainWindowViewModel viewModel) => Task.CompletedTask;
+    public Task SaveOutputSettings(ViewModels.OutputSettingsViewModel viewModel) => Task.CompletedTask;
+    public Task SaveKmlSettings(ViewModels.KmlSettingsViewModel viewModel) => Task.CompletedTask;
+
+    public Task LoadOutputSettings(ViewModels.OutputSettingsViewModel viewModel) => Task.CompletedTask;
+
+    public Task LoadKmlSettings(KmlSettingsViewModel viewModel) => Task.CompletedTask;
 }
 
 public class FileLoader : IFileLoader
 {
+    public Task<IFileHandle?> BrowseForFileAsync(string Description, IReadOnlyList<string> Extensions) => Task.FromResult((IFileHandle)null);
+
     public IAsyncEnumerable<IBitmapProvider> LoadImageAsync() => AsyncEnumerable.Empty<IBitmapProvider>();
 }
 

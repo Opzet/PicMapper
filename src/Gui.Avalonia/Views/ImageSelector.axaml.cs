@@ -5,15 +5,28 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Selection;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
+using Avalonia.Platform.Storage;
 using Avalonia.ReactiveUI;
+using Avalonia.Threading;
+
+using DynamicData;
+
+using ExCSS;
+
 using Mapsui.Layers;
 using Mapsui.Projections;
+using Mapsui.Providers.Wms;
 using Mapsui.Styles;
+
+using MMKiwi.PicMapper.Gui.Avalonia.Services;
 using MMKiwi.PicMapper.Models.Services;
 using MMKiwi.PicMapper.ViewModels;
 using ReactiveUI;
+
+using System.Collections.Concurrent;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
@@ -24,18 +37,20 @@ public partial class ImageSelector : ReactiveUserControl<ImageSelectorViewModel>
     public ImageSelector()
     {
         InitializeComponent();
-        PhotoList.Selection.SelectionChanged += Selection_SelectionChanged;
+        PhotoList.Selection.SelectionChanged += UpdateSelectedImage;
 
         ImageLayer = new(GetFeature)
         {
             Style = CreateBitmapStyle()
         };
 
-        this.WhenActivated(d =>
+        _ = this.WhenActivated(d =>
         {
+            PhotoList.AddHandler(DragDrop.DropEvent, DropFiles);
+            PhotoList.AddHandler(DragDrop.DragEnterEvent, StartDrop);
+            PhotoList.AddHandler(DragDrop.DragLeaveEvent, EndDropDrop);
+
             MapView.Map.Layers.Add(Mapsui.Tiling.OpenStreetMap.CreateTileLayer("PicMapper"));
-
-
 
             MapView.Map.Layers.Add(ImageLayer);
 
@@ -52,21 +67,40 @@ public partial class ImageSelector : ReactiveUserControl<ImageSelectorViewModel>
 
             };
 
-            ViewModel.WhenAnyValue(vm => vm.SelectedImage).Select(GetImage).Merge().BindTo(this, v => v.ImagePreview.Source).DisposeWith(d);
+            _ = ViewModel.WhenAnyValue(vm => vm.SelectedImage).Select(GetImage).Merge().BindTo(this, v => v.ImagePreview.Source).DisposeWith(d);
         });
     }
-
-    IObservable<object?> GetImage(IBitmapProvider? image)
+    public void StartDrop(object? sender, DragEventArgs eventArgs)
     {
-        if (image == null)
+        PhotoList.Classes.Add("DropHover");
+    }
+
+    public void EndDropDrop(object? sender, DragEventArgs eventArgs)
+    {
+        PhotoList.Classes.Remove("DropHover");
+    }
+
+    public async void DropFiles(object? sender, DragEventArgs eventArgs)
+    {
+        PhotoList.Classes.Remove("DropHover");
+
+        IEnumerable<IStorageItem>? files = eventArgs.Data.GetFiles();
+
+        if(files != null && ViewModel != null)
         {
-            return Observable.Return<object?>(null);
-        }
-        else
-        {
-            return Observable.FromAsync(image.GetImageAsync);
+            await Parallel.ForEachAsync(files, async (file, ct) =>
+            {
+                string? path = file.TryGetLocalPath();
+                if (path != null)
+                {
+                    AvaloniaBitmapProvider bitmap = await AvaloniaBitmapProvider.LoadAsync(path);
+                    Dispatcher.UIThread.Post(() => ViewModel.MainWindow.Images.Add(bitmap));
+                }
+            });
         }
     }
+
+    IObservable<object?> GetImage(IBitmapProvider? image) => image == null ? Observable.Return<object?>(null) : Observable.FromAsync(image.GetImageAsync);
 
     PointFeature GetFeature(IBitmapProvider imageInfo)
     {
@@ -86,7 +120,7 @@ public partial class ImageSelector : ReactiveUserControl<ImageSelectorViewModel>
         return new SymbolStyle { BitmapId = bitmapId, SymbolScale = 1, SymbolOffset = new Offset(0, bitmapHeight * 0.5) };
     }
 
-    private void Selection_SelectionChanged(object? sender, SelectionModelSelectionChangedEventArgs e)
+    private void UpdateSelectedImage(object? sender, SelectionModelSelectionChangedEventArgs e)
     {
         ViewModel!.SelectedImages = e.SelectedItems.Cast<IBitmapProvider>();
     }

@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:MMKiwi.PicMapper.ViewModels"
+             xmlns:app="using:MMKiwi.PicMapper.Gui.Avalonia"
+             xmlns:designvm="using:MMKiwi.PicMapper.ViewModels.Design"
+             xmlns:maps="clr-namespace:Mapsui.UI.Avalonia;assembly=Mapsui.UI.Avalonia"
+             x:DataType="vm:KmlSettingsViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MMKiwi.PicMapper.Gui.Avalonia.Views.KmlSettings">
+  <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,Auto,Auto,*">
+    <CheckBox Content="Embed Thumbnail" 
+              Margin="0 6 0 6"
+              Grid.ColumnSpan="2" 
+              IsChecked="{Binding EmbedThumbnail}"/>
+    <CheckBox Grid.Row="1"
+              Grid.ColumnSpan="2"
+              Margin="0 6 0 6"
+              Content="Embed Full-Resolution Image"
+              IsChecked="{Binding EmbedFullImage}"/>
+    <TextBlock Grid.Row="2" 
+               Text="Icon"
+               Margin="0 6 6 6"
+               VerticalAlignment="Center"/>
+    <ComboBox Grid.Row="2"
+              Grid.Column="1"
+              Margin="6 6 0 6"
+              Height="16"
+              x:Name="SelectedIcon"
+              ItemsSource="{StaticResource ResourceKey=KmlIcons}">
+      <ComboBox.DataTemplates>
+        <DataTemplate x:DataType="app:KmlIcon">
+          <Image Source="{Binding Bitmap}" Height="16" />
+        </DataTemplate>
+      </ComboBox.DataTemplates>
+    </ComboBox>
+  </Grid>
+</UserControl>

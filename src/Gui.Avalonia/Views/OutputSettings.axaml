@@ -6,74 +6,93 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="using:MMKiwi.PicMapper.ViewModels"
-			 xmlns:designvm="using:MMKiwi.PicMapper.ViewModels.Design"
-			 xmlns:maps="clr-namespace:Mapsui.UI.Avalonia;assembly=Mapsui.UI.Avalonia"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:DataType="vm:OutputSettingsViewModel"
+             xmlns:vm="using:MMKiwi.PicMapper.ViewModels"
+             xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+             xmlns:designvm="using:MMKiwi.PicMapper.ViewModels.Design"
+             xmlns:maps="clr-namespace:Mapsui.UI.Avalonia;assembly=Mapsui.UI.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:OutputSettingsViewModel"
              x:Class="MMKiwi.PicMapper.Gui.Avalonia.Views.OutputSettings"
-			 xmlns:ic="using:FluentIcons.Avalonia">
+             xmlns:ic="using:FluentIcons.Avalonia"
+             xmlns:app="using:MMKiwi.PicMapper.Gui.Avalonia">
 
-	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-		<designvm:OutputSettingsViewModel />
-	</Design.DataContext>
-	<Grid ColumnDefinitions="Auto, *, Auto"
+    <designvm:OutputSettingsViewModel />
+  </Design.DataContext>
+  <UserControl.Resources>
+    <app:PathToFileConverter x:Key="PathToFileConverter"/>
+  </UserControl.Resources>
+
+  <Grid ColumnDefinitions="Auto, *, Auto"
 		  RowDefinitions="Auto,Auto,Auto, *, Auto"
 		  Margin="12">
-		<TextBlock Grid.ColumnSpan="3"
+    <TextBlock Grid.ColumnSpan="3"
 				   Margin="12"
 				   Classes="Large"
 				   Text="Output Settings" />
-		<TextBlock Grid.Row="1"
+    <TextBlock Grid.Row="1"
 				   Margin="12 6 6 6"
 				   VerticalAlignment="Center"
 				   Text="Output Format"/>
-		<ComboBox Grid.Row="1"
-				  Grid.Column="1"
-				  Grid.ColumnSpan="2"
-				  HorizontalAlignment="Stretch"
-				  Margin="6"
-				  ItemsSource="{Binding Formats}" />
-		<TextBlock Grid.Row="2"
+    <ComboBox Grid.Row="1"
+              Grid.Column="1"
+              Grid.ColumnSpan="2"
+              HorizontalAlignment="Stretch"
+              Margin="6"
+              ItemsSource="{Binding Formats}"
+              SelectedItem="{Binding SelectedFormat}"
+              x:Name="SelectedFormat"/>
+    <TextBlock Grid.Row="2"
 				   Margin="12 6 6 6"
 				   VerticalAlignment="Center"
 				   Text="Output File Name"/>
-		<TextBox Grid.Row="2"
-				 Grid.Column="1"
-				 Margin="6 6 12 6"/>
-		<Button Grid.Row="2"
-				Grid.Column="2"
-				Margin="6 6 12 6"
-				Content="Browse" />
-		<StackPanel Grid.Row="4"
+    <TextBox Grid.Row="2"
+             Grid.Column="1"
+             Margin="6 6 12 6"
+             Text="{Binding OutputPath, Mode=TwoWay, Converter={StaticResource PathToFileConverter}}"
+             x:Name="OutputFilename"/>
+    <Button Grid.Row="2"
+            Grid.Column="2"
+            Margin="6 6 12 6"
+            Content="Browse"
+            Command="{Binding Browse}"/>
+    <rxui:ViewModelViewHost Margin="12" x:Name="SettingView"
+                            Grid.Row="3"
+                            Grid.ColumnSpan="3">
+      <rxui:ViewModelViewHost.DefaultContent>
+        <TextBlock Text="Select an output format to continue."
+                   FontStyle="Italic" Classes="Caption" />
+      </rxui:ViewModelViewHost.DefaultContent>
+    </rxui:ViewModelViewHost>
+    <StackPanel Grid.Row="4"
 					Grid.ColumnSpan="2"
 					Orientation="Horizontal"
 					HorizontalAlignment="Right">
-			<Button Margin="12 12 6 12"
+      <Button Margin="12 12 6 12"
 					HorizontalAlignment="Right"
 					Command="{Binding Back}">
-				<StackPanel Orientation="Horizontal">
-					<ic:SymbolIcon Margin="0 0 4 0"
+        <StackPanel Orientation="Horizontal">
+          <ic:SymbolIcon Margin="0 0 4 0"
 								   Symbol="ArrowLeft"
 								   IsFilled="True"
 								   VerticalAlignment="Center" />
-					<TextBlock Text="Back" />
-				</StackPanel>
+          <TextBlock Text="Back" />
+        </StackPanel>
 
-			</Button>
-			<Button Margin="6 12 12 12"
+      </Button>
+      <Button Margin="6 12 12 12"
 					HorizontalAlignment="Right"
 					Command="{Binding Next}">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Next" />
-					<ic:SymbolIcon Margin="4 0 0 0"
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Text="Next" />
+          <ic:SymbolIcon Margin="4 0 0 0"
 								   Symbol="ArrowRight"
 								   IsFilled="True"
 								   VerticalAlignment="Center" />
-				</StackPanel>
-			</Button>
-		</StackPanel>
-	</Grid>
+        </StackPanel>
+      </Button>
+    </StackPanel>
+  </Grid>
 </UserControl>

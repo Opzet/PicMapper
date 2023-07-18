@@ -22,7 +22,7 @@ class Program
         RxApp.DefaultExceptionHandler = Exceptions;
         try
         {
-            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+            _ = BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
         catch(Exception ex)
         {
@@ -31,7 +31,6 @@ class Program
     }
 
     private static ExceptionHandler Exceptions { get; } = new();
-
 
     private class ExceptionHandler : IObserver<Exception>
     {
@@ -42,7 +41,7 @@ class Program
                 Debugger.Break();
             }
 
-            RxApp.MainThreadScheduler.Schedule(() => throw value);
+            using var _ = RxApp.MainThreadScheduler.Schedule(() => throw value);
         }
 
         public void OnError(Exception error)
@@ -52,7 +51,7 @@ class Program
                 Debugger.Break();
             }
 
-            RxApp.MainThreadScheduler.Schedule(() => throw error);
+            using var _ = RxApp.MainThreadScheduler.Schedule(() => throw error);
         }
 
         public void OnCompleted()
@@ -62,7 +61,7 @@ class Program
                 Debugger.Break();
             }
 
-            RxApp.MainThreadScheduler.Schedule(() => throw new NotImplementedException());
+            using var _ = RxApp.MainThreadScheduler.Schedule(() => throw new NotImplementedException());
         }
     }
 

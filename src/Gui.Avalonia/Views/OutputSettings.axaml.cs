@@ -8,12 +8,18 @@ using Avalonia.Controls.Selection;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
 using Avalonia.ReactiveUI;
+
 using Mapsui.Layers;
 using Mapsui.Projections;
 using Mapsui.Styles;
+
 using MMKiwi.PicMapper.Models.Services;
 using MMKiwi.PicMapper.ViewModels;
+
 using ReactiveUI;
+using ReactiveUI.Validation.Extensions;
+
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
@@ -24,5 +30,17 @@ public partial class OutputSettings : ReactiveUserControl<OutputSettingsViewMode
     public OutputSettings()
     {
         InitializeComponent();
+        SelectedFormat.SelectionChanged += UpdateSelectedFormat;
+        SettingView.ViewLocator = new AppViewLocator();
+        this.WhenActivated(d =>
+        {
+            ViewModel.WhenAnyValue(vm => vm.FormatViewModel).BindTo(this, v => v.SettingView.ViewModel).DisposeWith(d);
+        });
+    }
+
+    private void UpdateSelectedFormat(object? sender, SelectionChangedEventArgs e)
+    {
+        if (ViewModel == null) return;
+        ViewModel.SelectedFormat = SelectedFormat.SelectedItem as FormatInfo;
     }
 }

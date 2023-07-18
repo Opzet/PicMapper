@@ -3,8 +3,17 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 namespace MMKiwi.PicMapper.Models.Services;
+
+/// <summary>
+/// Abstraction for loading an image. Currently this is implemented only
+/// for an Avalonia bitmap. May need to switch to Skia since Avalonia's
+/// transformations are pretty limited.
+/// </summary>
 public interface IBitmapProvider
 {
+    /// <summary>
+    /// Thumbnail object for data binding.
+    /// </summary>
     object Thumbnail { get; }
     Task<object> GetImageAsync();
     double Width { get; }

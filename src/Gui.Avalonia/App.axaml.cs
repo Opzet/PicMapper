@@ -26,7 +26,6 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             MainWindowViewModel vm = new(FileLoader, SettingsProvider);
-            DesktopSettingsProvider.LoadMainWindowSettings(vm);
 
             MainWindow = new MainWindow
             {
