@@ -7,8 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="LICENSE.md" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Mapsui" Version="4.0.*" />
 		<PackageReference Include="ReactiveUI" Version="19.4.*" />
 	</ItemGroup>
-
 </Project>

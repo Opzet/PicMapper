@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// Licensed under the MIT license. See LICENSE.md file in this folder for details
+
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System;

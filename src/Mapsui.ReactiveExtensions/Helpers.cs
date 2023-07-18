@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Licensed under the MIT license. See LICENSE.md file in this folder for details
+
+using System;
 using DynamicData;
 
 namespace Mapsui.Layers;
