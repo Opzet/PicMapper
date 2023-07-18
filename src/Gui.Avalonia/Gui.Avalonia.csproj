@@ -5,7 +5,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
@@ -34,6 +34,7 @@
 
 	<ItemGroup>
 		<None Remove="Assets\placemark.svg" />
+		<None Remove="Assets\yellowPlacemark.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -49,9 +50,11 @@
 		<PackageReference Include="MetadataExtractor" Version="2.8.0" />
 		<PackageReference Include="FluentIcons.Avalonia" Version="1.1.206" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
+		<PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Mapsui.ReactiveExtensions\Mapsui.ReactiveExtensions.csproj" />
 		<ProjectReference Include="..\Models\Models.csproj" />
 		<ProjectReference Include="..\ViewModels\ViewModels.csproj" />
 	</ItemGroup>

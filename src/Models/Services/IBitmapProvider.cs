@@ -22,6 +22,7 @@ public interface IBitmapProvider
     double? X { get; }
     double? Y { get; }
 
+    public string UniqueId { get; }
     byte[] GetThumbnail();
     string ThumbnailMimeType { get; }
     string MimeType { get; }

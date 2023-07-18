@@ -27,7 +27,7 @@ public class SettingsProvider : ISettingsProvider
 
 public class FileLoader : IFileLoader
 {
-    public Task<IFileHandle?> BrowseForFileAsync(string Description, IReadOnlyList<string> Extensions) => Task.FromResult((IFileHandle)null);
+    public Task<IFileHandle?> BrowseForFileAsync(string Description, IReadOnlyList<string> Extensions) => Task.FromResult<IFileHandle?>(null);
 
     public IAsyncEnumerable<IBitmapProvider> LoadImageAsync() => AsyncEnumerable.Empty<IBitmapProvider>();
 }
@@ -37,7 +37,7 @@ public class ImageSelectorViewModel : ViewModels.ImageSelectorViewModel
     public ImageSelectorViewModel() : base(new MainWindowViewModel()) { }
 }
 
-public class OutputSettingsViewModel: ViewModels.OutputSettingsViewModel
+public class OutputSettingsViewModel : ViewModels.OutputSettingsViewModel
 {
     public OutputSettingsViewModel() : base(new MainWindowViewModel()) { }
 }

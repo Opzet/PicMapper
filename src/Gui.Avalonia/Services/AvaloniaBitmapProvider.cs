@@ -12,23 +12,25 @@ using Directory = MetadataExtractor.Directory;
 namespace MMKiwi.PicMapper.Gui.Avalonia.Services;
 public abstract class AvaloniaBitmapProvider : IBitmapProvider
 {
-    protected AvaloniaBitmapProvider(Bitmap thumbnail, double width, double height, string fileName, double? x, double? y, string mimeType)
-    {
-        Thumbnail = thumbnail;
-        Width = width;
-        Height = height;
-        FileName = fileName;
-        X = x;
-        Y = y;
-        MimeType = mimeType;
-    }
-
     public static async Task<AvaloniaBitmapProvider> LoadAsync(IStorageFile file)
     {
         await using Stream imageStream = await file.OpenReadAsync();
         (var mimeType, var thumbnail, var location) = Load(imageStream);
 
-        return new StorageFileProvider(file, thumbnail, 0, 0, file.Path.Segments.Last(), location?.Longitude, location?.Latitude, mimeType);
+        string filePath = file.TryGetLocalPath() ?? file.Path.ToString();
+
+        return new StorageFileProvider
+        {
+            StorageFile = file,
+            UniqueId = filePath,
+            FileName = Path.GetFileName(filePath),
+            Height = 0,
+            Width = 0,
+            MimeType = mimeType,
+            Thumbnail = thumbnail,
+            X = location?.Longitude,
+            Y = location?.Latitude
+        };
     }
 
     public static async Task<AvaloniaBitmapProvider> LoadAsync(string filePath)
@@ -36,7 +38,18 @@ public abstract class AvaloniaBitmapProvider : IBitmapProvider
         await using Stream imageStream = File.OpenRead(filePath);
         (var mimeType, var thumbnail, var location) = Load(imageStream);
 
-        return new LocalFileProvider(filePath, thumbnail, 0, 0, Path.GetFileName(filePath), location?.Longitude, location?.Latitude, mimeType);
+        return new LocalFileProvider
+        {
+            FilePath = filePath,
+            UniqueId = filePath,
+            FileName = Path.GetFileName(filePath),
+            Height = 0,
+            Width = 0,
+            MimeType = mimeType,
+            Thumbnail = thumbnail,
+            X = location?.Longitude,
+            Y = location?.Latitude
+        };
     }
 
     private static (string MimeType, Bitmap Thumbnail, GeoLocation? location) Load(Stream imageStream)
@@ -56,13 +69,7 @@ public abstract class AvaloniaBitmapProvider : IBitmapProvider
 
     private class StorageFileProvider : AvaloniaBitmapProvider
     {
-        public StorageFileProvider(IStorageFile file, Bitmap thumbnail, double width, double height, string fileName, double? x, double? y, string mimeType)
-            : base(thumbnail, width, height, fileName, x, y, mimeType)
-        {
-            StorageFile = file;
-        }
-
-        public IStorageFile StorageFile { get; }
+        public required IStorageFile StorageFile { get; init; }
 
         protected override Task<Stream> OpenReadAsync() => StorageFile.OpenReadAsync();
 
@@ -71,36 +78,31 @@ public abstract class AvaloniaBitmapProvider : IBitmapProvider
 
     private class LocalFileProvider : AvaloniaBitmapProvider
     {
-        public LocalFileProvider(string filePath, Bitmap thumbnail, double width, double height, string fileName, double? x, double? y, string mimeType)
-    : base(thumbnail, width, height, fileName, x, y, mimeType)
-        {
-            FilePath = filePath;
-        }
-
-        public string FilePath { get; }
+        public required string FilePath { get; init; }
 
         protected override Task<Stream> OpenReadAsync() => Task.FromResult<Stream>(File.OpenRead(FilePath));
 
         protected override Task<Stream> OpenWriteAsync() => Task.FromResult<Stream>(File.OpenWrite(FilePath));
     }
 
-    public double Width { get; }
+    public required double Width { get; init; }
 
-    public double Height { get; }
+    public required double Height { get; init; }
 
-    public string FileName { get; }
+    public required string FileName { get; init; }
 
     object IBitmapProvider.Thumbnail => Thumbnail;
 
-    public Bitmap Thumbnail { get; }
+    public required Bitmap Thumbnail { get; init; }
 
-    public double? X { get; }
+    public required double? X { get;init; }
 
-    public double? Y { get; }
-    public string MimeType { get; }
+    public required double? Y { get; init; }
+    public required string MimeType { get; init;  }
+    public required string UniqueId { get; init; }
+    public virtual string ThumbnailMimeType => "image/png";
 
-    public string ThumbnailMimeType => "image/png";
-
+    public override string ToString() => $"Image: {FileName}";
     public async Task<Bitmap> GetImageAsync()
     {
         Stream imageStream = await OpenReadAsync();

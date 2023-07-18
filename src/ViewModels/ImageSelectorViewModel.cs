@@ -10,6 +10,11 @@ using System.Reactive.Disposables;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
+using System.Collections.ObjectModel;
+using DynamicData;
+using static System.Net.Mime.MediaTypeNames;
+using System.Diagnostics.Metrics;
+using DynamicData.Binding;
 
 namespace MMKiwi.PicMapper.ViewModels;
 public partial class ImageSelectorViewModel : ViewModelBase, IRoutableViewModel
@@ -17,14 +22,6 @@ public partial class ImageSelectorViewModel : ViewModelBase, IRoutableViewModel
     public ImageSelectorViewModel(MainWindowViewModel mainWindow)
     {
         MainWindow = mainWindow;
-
-        LoadImages = ReactiveCommand.CreateFromTask(LoadImagesAsync);
-
-        IObservable<bool> hasSelected = this.WhenAnyValue(vm => vm.SelectedImages).Select(coll => coll != null && coll.Any());
-        _hasSelected = hasSelected.ToProperty(this, vm => vm.HasSelected);
-        RemoveImages = ReactiveCommand.Create(RemoveImagesImpl, hasSelected);
-
-        _selectedImage = this.WhenAnyValue(vm => vm.SelectedImages).Select(image => image?.FirstOrDefault()).ToProperty(this, vm => vm.SelectedImage);
 
         _ = this.ValidationRule(vm => vm.MainWindow.Images.Count, c => c > 0, "At least one image is required.");
 
@@ -34,6 +31,19 @@ public partial class ImageSelectorViewModel : ViewModelBase, IRoutableViewModel
             await MainWindow.SettingsProvider.LoadOutputSettings(vm);
             return await MainWindow.Router.Navigate.Execute(vm);
         }, this.IsValid());
+
+        var disposable = _selectedImagesSource.Connect().ObserveOn(RxApp.MainThreadScheduler).Bind(out _selectedImages).Subscribe();
+        _selectedImage = SelectedImages.ObserveCollectionChanges().Select(_ => SelectedImages.FirstOrDefault()).ToProperty(this, vm => vm.SelectedImage);
+        IObservable<bool> hasSelected = this.WhenAnyValue(vm => vm.SelectedImages.Count).Select(c => c > 0);
+        _hasSelected = hasSelected.ToProperty(this, vm => vm.HasSelected);
+
+        this.WhenActivated((CompositeDisposable d) =>
+        {
+            d.Add(disposable);
+        });
+
+        LoadImages = ReactiveCommand.CreateFromTask(LoadImagesAsync);
+        RemoveImages = ReactiveCommand.Create(RemoveImagesImpl, hasSelected);
 
     }
 
@@ -47,7 +57,7 @@ public partial class ImageSelectorViewModel : ViewModelBase, IRoutableViewModel
         IAsyncEnumerable<IBitmapProvider> files = MainWindow.FileLoader.LoadImageAsync();
         await foreach (IBitmapProvider file in files)
         {
-            MainWindow.Images.Add(file);
+            MainWindow.AddImage(file);
         }
     }
 
@@ -58,26 +68,18 @@ public partial class ImageSelectorViewModel : ViewModelBase, IRoutableViewModel
             return;
         }
 
-        foreach (object selected in SelectedImages)
-        {
-            if (selected is IBitmapProvider selectedImage)
-            {
-                MainWindow.Images.Remove(selectedImage);
-            }
-        }
+        MainWindow.RemoveImages(SelectedImages);
     }
 
-    private IEnumerable<IBitmapProvider>? _selectedImages;
+    public void AddSelectedImages(IEnumerable<IBitmapProvider> images) => _selectedImagesSource.AddOrUpdate(images);
+    public void RemoveSelectedImages(IEnumerable<IBitmapProvider> images) => _selectedImagesSource.Remove(images);
 
-    public IEnumerable<IBitmapProvider>? SelectedImages
-    {
-        get => _selectedImages;
-        set
-        {
-            _selectedImages = value;
-            this.RaisePropertyChanged();
-        }
-    }
+    private readonly SourceCache<IBitmapProvider, string> _selectedImagesSource = new(i => i.UniqueId);
+
+    private ReadOnlyObservableCollection<IBitmapProvider> _selectedImages;
+    public ReadOnlyObservableCollection<IBitmapProvider> SelectedImages => _selectedImages;
+
+    public IObservable<IChangeSet<IBitmapProvider, string>> ConnectSelectedImages() => _selectedImagesSource.Connect();
 
     public ObservableAsPropertyHelper<bool> _hasSelected;
     public bool HasSelected => _hasSelected.Value;

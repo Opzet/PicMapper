@@ -11,7 +11,9 @@
         xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
         xmlns:app="using:MMKiwi.PicMapper.Gui.Avalonia"
         xmlns:designvm="using:MMKiwi.PicMapper.ViewModels.Design"
-		
+		TransparencyLevelHint="AcrylicBlur"           
+		Background="Transparent"
+		ExtendClientAreaToDecorationsHint="True"
 		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="MMKiwi.PicMapper.Gui.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -23,17 +25,25 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<designvm:MainWindowViewModel/>
 	</Design.DataContext>
-
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}">
-		<rxui:RoutedViewHost.DefaultContent>
-			<TextBlock Text="Default content"
-					   HorizontalAlignment="Center"
-					   VerticalAlignment="Center" />
-		</rxui:RoutedViewHost.DefaultContent>
-		<rxui:RoutedViewHost.ViewLocator>
-			<!-- See AppViewLocator.cs section below -->
-			<app:AppViewLocator />
-		</rxui:RoutedViewHost.ViewLocator>
-	</rxui:RoutedViewHost>
-
+	<Panel>
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial
+					 BackgroundSource="Digger"
+					 TintColor="Black"
+					 TintOpacity=".65"
+					 MaterialOpacity="0.65" />
+			</ExperimentalAcrylicBorder.Material>
+		</ExperimentalAcrylicBorder>
+		<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}">
+			<rxui:RoutedViewHost.DefaultContent>
+				<TextBlock Text="Default content"
+						   HorizontalAlignment="Center"
+						   VerticalAlignment="Center" />
+			</rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:AppViewLocator />
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
+	</Panel>
 </Window>
