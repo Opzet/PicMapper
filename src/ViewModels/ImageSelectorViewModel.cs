@@ -4,7 +4,7 @@
 
 using ReactiveUI;
 using System.Reactive;
-using MMKiwi.PicMapper.Models.Services;
+using MMKiwi.PicMapper.ViewModels.Services;
 using System.Reactive.Linq;
 using System.Reactive.Disposables;
 using ReactiveUI.Validation.Abstractions;

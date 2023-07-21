@@ -6,7 +6,7 @@ using Avalonia.Data;
 using Avalonia.Data.Converters;
 
 using MMKiwi.PicMapper.Gui.Avalonia.Services;
-using MMKiwi.PicMapper.Models.Services;
+using MMKiwi.PicMapper.ViewModels.Services;
 
 using System.Globalization;
 

@@ -29,8 +29,4 @@
 		<PackageReference Include="ReactiveUI.Validation" Version="3.1.7" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Models\Models.csproj" />
-	</ItemGroup>
 </Project>

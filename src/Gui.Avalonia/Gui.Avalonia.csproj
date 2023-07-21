@@ -55,7 +55,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Mapsui.ReactiveExtensions\Mapsui.ReactiveExtensions.csproj" />
-		<ProjectReference Include="..\Models\Models.csproj" />
 		<ProjectReference Include="..\ViewModels\ViewModels.csproj" />
 	</ItemGroup>
 

@@ -13,7 +13,7 @@ using Mapsui.Layers;
 using Mapsui.Projections;
 using Mapsui.Styles;
 
-using MMKiwi.PicMapper.Models.Services;
+using MMKiwi.PicMapper.ViewModels.Services;
 using MMKiwi.PicMapper.ViewModels;
 
 using ReactiveUI;

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MMKiwi.PicMapper.Models.Services;
+namespace MMKiwi.PicMapper.ViewModels.Services;
 
 /// <summary>
 /// File handle to pass around. 

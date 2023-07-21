@@ -22,7 +22,7 @@ using Mapsui.Providers.Wms;
 using Mapsui.Styles;
 
 using MMKiwi.PicMapper.Gui.Avalonia.Services;
-using MMKiwi.PicMapper.Models.Services;
+using MMKiwi.PicMapper.ViewModels.Services;
 using MMKiwi.PicMapper.ViewModels;
 using ReactiveUI;
 

@@ -3,7 +3,7 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using Avalonia.Platform.Storage;
-using MMKiwi.PicMapper.Models.Services;
+using MMKiwi.PicMapper.ViewModels.Services;
 using Avalonia.Media.Imaging;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;

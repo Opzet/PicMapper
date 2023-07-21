@@ -3,9 +3,8 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using ReactiveUI;
-using MMKiwi.PicMapper.Models.Services;
-using System.Collections.ObjectModel;
 using MMKiwi.PicMapper.ViewModels.Services;
+using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Disposables;
 using DynamicData;

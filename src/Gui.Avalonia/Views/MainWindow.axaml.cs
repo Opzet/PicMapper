@@ -11,7 +11,7 @@ using Mapsui.Layers;
 using Mapsui.Styles;
 using Avalonia.Platform;
 using Mapsui.Projections;
-using MMKiwi.PicMapper.Models.Services;
+using MMKiwi.PicMapper.ViewModels.Services;
 
 namespace MMKiwi.PicMapper.Gui.Avalonia.Views;
 
