@@ -3,7 +3,6 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using MMKiwi.PicMapper.ViewModels.Services;
-
 using ReactiveUI.Validation.Abstractions;
 
 namespace MMKiwi.PicMapper.ViewModels;
@@ -12,11 +11,5 @@ public interface IOutputSettingsViewModel: IValidatableViewModel
 {
     OutputSettingsViewModel ParentViewModel { get; }
 
-    IFormatProcessor CreateProcessor();
-}
-
-public interface IFormatProcessor
-{
-    string OutputPath { get; }
-    Task Process(IEnumerable<IBitmapProvider> images);
+    IFormatProcessor CreateProcessor(IFileHandle outputPath);
 }

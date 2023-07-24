@@ -22,6 +22,7 @@ using ReactiveUI.Validation.Extensions;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using MMKiwi.PicMapper.ViewModels.Models;
 
 namespace MMKiwi.PicMapper.Gui.Avalonia.Views;
 

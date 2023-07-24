@@ -2,12 +2,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+using MMKiwi.PicMapper.ViewModels.Models;
 using MMKiwi.PicMapper.ViewModels.Services;
 
 using ReactiveUI;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
-
 using static MMKiwi.PicMapper.ViewModels.KmlSettingsViewModel;
 
 namespace MMKiwi.PicMapper.ViewModels;
@@ -32,26 +32,37 @@ public partial class KmlSettingsViewModel : ViewModelBase<Settings>, IOutputSett
 
     public OutputSettingsViewModel ParentViewModel { get; }
 
-    public bool EmbedThumbnail
-    {
+    public bool EmbedThumbnail {
         get => _embedThumbnail;
         set => this.RaiseAndSetIfChanged(ref _embedThumbnail, value);
     }
-    public bool EmbedFullImage
-    {
+    public bool EmbedFullImage {
         get => _embedFullImage;
         set => this.RaiseAndSetIfChanged(ref _embedFullImage, value);
 
     }
 
-    public IconInfo? Icon
-    {
+    public IconInfo? Icon {
         get => _icon;
         set => this.RaiseAndSetIfChanged(ref _icon, value);
     }
 
-    public IFormatProcessor CreateProcessor()
+    public IFormatProcessor CreateProcessor(IFileHandle outputPath)
+        => new Processor()
+        {
+            OutputPath = outputPath,
+            Settings = SaveSettings()
+        };
+
+    private class Processor : IFormatProcessor
     {
-        throw new NotImplementedException();
+        public required IFileHandle OutputPath { get; init; }
+
+        public required Settings Settings { get; init; }
+
+        public Task Process(IEnumerable<IBitmapProvider> images)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

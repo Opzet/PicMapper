@@ -7,7 +7,7 @@ using ReactiveUI;
 using System.ComponentModel;
 
 namespace MMKiwi.PicMapper.ViewModels;
-internal class ProcessorViewModel : ViewModelBase, IRoutableViewModel
+public class ProcessorViewModel : ViewModelBase, IRoutableViewModel
 {
     public ProcessorViewModel(MainWindowViewModel mainWindowViewModel, IFormatProcessor processor)
     {

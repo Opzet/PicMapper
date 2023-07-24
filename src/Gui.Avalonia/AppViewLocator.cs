@@ -15,6 +15,7 @@ public class AppViewLocator : IViewLocator
         ImageSelectorViewModel context => new ImageSelector { ViewModel = context },
         OutputSettingsViewModel context => new OutputSettings { ViewModel = context },
         KmlSettingsViewModel context => new KmlSettings { ViewModel = context },
+        ProcessorViewModel context => new Processor { ViewModel = context },
         _ => throw new ArgumentOutOfRangeException(nameof(viewModel))
     };
 }

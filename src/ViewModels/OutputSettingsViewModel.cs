@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+using MMKiwi.PicMapper.ViewModels.Models;
 using MMKiwi.PicMapper.ViewModels.Services;
 
 using ReactiveUI;
@@ -39,7 +40,7 @@ public partial class OutputSettingsViewModel : ViewModelBase<OutputSettingsViewM
         _ = this.ValidationRule(vm => vm.OutputPath, outPath => outPath != null, "Please select an output path");
         _ = this.ValidationRule(this.WhenAnyValue(vm => vm.SelectedFormat).Select(sf => sf?.ViewModel.ValidationContext.Valid ?? Observable.Return(false)).Merge(), "The format settings are invalid");
 
-        Next = ReactiveCommand.CreateFromObservable(() => MainWindow.Router.Navigate.Execute(new ProcessorViewModel(MainWindow, SelectedFormat!.ViewModel.CreateProcessor())), this.IsValid());
+        Next = ReactiveCommand.CreateFromObservable(() => MainWindow.Router.Navigate.Execute(new ProcessorViewModel(MainWindow, SelectedFormat!.ViewModel.CreateProcessor(OutputPath!))), this.IsValid());
 
         this.WhenActivated(d =>
         {
